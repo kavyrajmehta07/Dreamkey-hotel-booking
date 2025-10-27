@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DreamKey Hotel Booking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+    body{background:#f8f8f8;color:#333;scroll-behavior:smooth;}
+    header{position:fixed;width:100%;top:0;left:0;background:white;display:flex;justify-content:space-between;align-items:center;padding:1rem 5%;box-shadow:0 2px 10px rgba(0,0,0,0.1);z-index:1000;}
+    header h1{color:#0078ff;font-weight:700;}
+    nav ul{display:flex;gap:1.5rem;list-style:none;}
+    nav a{text-decoration:none;color:#333;font-weight:500;transition:0.3s;}
+    nav a:hover{color:#0078ff;}
+    .menu-toggle{display:none;font-size:1.5rem;cursor:pointer;}
+    .profile-icon{display:none;font-size:1.6rem;cursor:pointer;color:#0078ff;}
+
+    /* HERO */
+    .hero{
+      height:100vh;
+      background:url('https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80') center/cover;
+      display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+      color:white;position:relative;
+    }
+    .hero::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);}
+    .hero h2{
+      position:relative;z-index:1;font-family:'Playfair Display',serif;font-size:3rem;
+      background:linear-gradient(90deg,#00c6ff,#0072ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      text-shadow:2px 2px 20px rgba(255,255,255,0.15);animation:fadeInUp 1.5s ease;
+    }
+    .hero p{position:relative;z-index:1;margin-top:1rem;font-size:1.2rem;color:#e0e0e0;animation:fadeIn 2s ease;}
+    .hero button{position:relative;z-index:1;margin-top:2rem;background:#0078ff;color:white;border:none;border-radius:25px;padding:0.8rem 1.5rem;cursor:pointer;transition:0.3s;font-weight:600;}
+    .hero button:hover{background:#005ecb;transform:scale(1.05);}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+    /* ROOMS */
+    section{padding:100px 10%;text-align:center;}
+    h2.section-title{color:#0078ff;font-size:2rem;margin-bottom:1rem;}
+    p.section-subtitle{color:#666;margin-bottom:3rem;}
+    .rooms{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;}
+    .room{background:white;border-radius:20px;overflow:hidden;box-shadow:0 4px 10px rgba(0,0,0,0.05);transition:0.3s;}
+    .room:hover{transform:translateY(-10px);}
+    .room img{width:100%;height:200px;object-fit:cover;}
+    .room-info{padding:1.2rem;}
+    .room-info h3{color:#0078ff;margin-bottom:0.5rem;}
+    .room-info p{font-size:0.9rem;color:#555;}
+    .room-info .price{margin:0.8rem 0;font-weight:600;}
+    .room-info button{background:#0078ff;color:white;border:none;border-radius:25px;padding:0.6rem 1.2rem;cursor:pointer;transition:0.3s;}
+    .room-info button:hover{background:#005ecb;}
+
+    /* MODALS */
+    .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;z-index:9999;}
+    .modal-content{background:white;padding:2rem;border-radius:15px;width:90%;max-width:500px;text-align:center;position:relative;animation:fadeInUp 0.5s;}
+    .modal-content h3{margin-bottom:1rem;color:#0078ff;}
+    .modal-content input{width:100%;padding:0.8rem;margin:0.5rem 0;border:1px solid #ccc;border-radius:8px;}
+    .modal-content button{background:#0078ff;color:white;border:none;padding:0.8rem 1.5rem;border-radius:8px;margin-top:1rem;cursor:pointer;}
+    .modal-content button:hover{background:#005ecb;}
+    .close-btn{position:absolute;top:10px;right:15px;font-size:1.2rem;cursor:pointer;color:#888;}
+    .modal a{color:#0078ff;text-decoration:none;font-size:0.9rem;}
+    .modal a:hover{text-decoration:underline;}
+
+    footer{text-align:center;padding:2rem;background:#0078ff;color:white;margin-top:2rem;}
+
+    /* Image carousel */
+    .carousel{position:relative;width:100%;overflow:hidden;border-radius:10px;margin-bottom:1rem;}
+    .carousel img{width:100%;height:250px;object-fit:cover;display:none;}
+    .carousel img.active{display:block;}
+    .carousel .prev,.carousel .next{
+      position:absolute;top:50%;transform:translateY(-50%);
+      background:rgba(0,0,0,0.5);color:white;border:none;padding:5px 10px;cursor:pointer;border-radius:50%;
+    }
+    .carousel .prev{left:10px;}
+    .carousel .next{right:10px;}
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>DreamKey Hotels</h1>
+  <i class="fas fa-bars menu-toggle"></i>
+  <nav>
+    <ul>
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#rooms">Rooms</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#terms">Terms</a></li>
+      <li><a href="#status">Status</a></li>
+      <li><a href="#" id="loginBtn">Login</a></li>
+    </ul>
+  </nav>
+  <i class="fas fa-user-circle profile-icon" id="profileIcon"></i>
+</header>
+
+<section class="hero" id="hero">
+  <h2>Unlock Your Stay with DreamKey Hotels</h2>
+  <p>Luxury Rooms • Premium Comfort • Affordable Prices</p>
+  <button onclick="document.getElementById('rooms').scrollIntoView({behavior:'smooth'})">Explore Rooms</button>
+</section>
+
+<section id="rooms">
+  <h2 class="section-title">Available Rooms</h2>
+  <p class="section-subtitle">Choose the best stay for your comfort</p>
+  <div class="rooms">
+    <div class="room">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fir-crop&w=1200&q=80">
+      <div class="room-info">
+        <h3>Luxury Suite</h3>
+        <p>King-sized bed, Ocean view, Breakfast included</p>
+        <div class="price">₹3,000 / Night</div>
+        <button onclick="viewRoom('Luxury Suite',3000,['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80'])">View Details</button>
+      </div>
+    </div>
+
+    <div class="room">
+      <img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80">
+      <div class="room-info">
+        <h3>Deluxe Room</h3>
+        <p>Queen bed, Free Wi-Fi, City view</p>
+        <div class="price">₹1,500 / Night</div>
+        <button onclick="viewRoom('Deluxe Room',1500,['https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80','https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=80'])">View Details</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <h2 class="section-title">About DreamKey</h2>
+  <p class="section-subtitle">Wel come to <b>DreamKey</b>, your perfect gateway to finding rooms and destination where every stay feels like a dream. Whether you're searching fora cozy rooms for your family&partner,a luxurious rooms for a romantic escape, or a peaceful spot to unwind,<b>DreamKey</b> connects you with spaces desined for comfort,joy,and unforgettable memories.
+    We believe a perfect room and holiday isn't just about walls and roofs-it's about moments,laughter,and togetherness.At<b>DreamKey</b>,we open the doors to happiness,helping you creat experience that last a lifetime.
+    </b></p>
+</section>
+
+<section id="terms">
+  <h2 class="section-title">Terms & Conditions</h2>
+  <p class="section-subtitle"><b><u>Use Of Service</u></b><b>: DreamKey</b> is a property and stay listing platform created to help users discover,explore,and book place for living or vacationing.By using this website,you agree to follow our terms and respect our community guidelines.</p>
+  <p><b><u>Family & Partner-friendly</u></b>:Our platform encourages booking for families,couples,and indiciduals seeking peaceful adn enjoyable stays.Any misuse or inappropriate activity that disrupts the comfort of other is strictly prohibited.</p>
+  <p><b><u>Accurany Of Listing</u></b>:While we strive to provide accurate property details,images,and descriptions,<b>DreamKey</b> is not liable for minor variation in property conditions or amenities.</p>
+  <p><b><u>Booking & Payment</u></b>:All booking are subject to availability.Users are requested to verify property details and payment terms before confirming a stay.
+  <p><b><u>Limitation of Liability</u></b>:<b>DreamKey</b> acts as a connecting platform and is not responsible for disputes or damages or arising during stay or transactions.</p>
+</section>
+
+<section id="status">
+  <h2 class="section-title">Company Status</h2>
+  <p class="section-subtitle">DreamKey Hotels - Trusted by 10,000+ happy guests worldwide.</p>
+</section>
+
+<footer>© 2025 DreamKey Hotels. All Rights Reserved.</footer>
+
+<!-- Login/Register/Profile -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('loginModal')">&times;</span>
+    <h3>Login</h3>
+    <input type="email" id="loginEmail" placeholder="Email" />
+    <input type="password" id="loginPassword" placeholder="Password" />
+    <button onclick="login()">Login</button>
+    <p><a href="#" onclick="switchModal('loginModal','forgotModal')">Forgot Password?</a></p>
+    <p>New user? <a href="#" onclick="switchModal('loginModal','registerModal')">Register</a></p>
+  </div>
+</div>
+
+<div class="modal" id="registerModal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
+    <h3>Register</h3>
+    <input type="text" id="regName" placeholder="Full Name" />
+    <input type="email" id="regEmail" placeholder="Email" />
+    <input type="password" id="regPassword" placeholder="Password" />
+    <button onclick="register()">Create Account</button>
+  </div>
+</div>
+
+<div class="modal" id="forgotModal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('forgotModal')">&times;</span>
+    <h3>Reset Password</h3>
+    <input type="email" id="forgotEmail" placeholder="Enter your registered email" />
+    <button onclick="resetPassword()">Send Reset Link</button>
+  </div>
+</div>
+
+<div class="modal" id="profileModal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal('profileModal')">&times;</span>
+    <h3>User Profile</h3>
+    <input type="text" id="profileName" placeholder="Full Name" />
+    <input type="email" id="profileEmail" placeholder="Email" />
+    <input type="password" id="profilePassword" placeholder="Change Password" />
+    <button onclick="saveProfile()">Save Changes</button>
+    <button style="background:#e74c3c;margin-top:10px;" onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<!-- Room Details Modal -->
+<div class="modal" id="roomModal">
+  <div class="modal-content" style="max-width:600px;">
+    <span class="close-btn" onclick="closeModal('roomModal')">&times;</span>
+    <h3 id="roomTitle"></h3>
+
+    <div class="carousel" id="roomCarousel">
+      <button class="prev" onclick="prevImage()">‹</button>
+      <button class="next" onclick="nextImage()">›</button>
+    </div>
+
+    <p id="roomPrice" style="font-weight:600;color:#0078ff;margin-bottom:1rem;"></p>
+    <div>
+      <label>Check-in Date:</label>
+      <input type="date" id="checkin">
+      <label>Check-out Date:</label>
+      <input type="date" id="checkout">
+    </div>
+    <p id="nightCount" style="margin-top:10px;color:#555;"></p>
+    <p id="totalCost" style="margin-top:5px;font-weight:600;"></p>
+    <button onclick="calculateCost()">Calculate Cost</button>
+    <button onclick="bookRoom()">Book Now</button>
+  </div>
+</div>
+
+<script>
+let users=[],currentUser=null,selectedRoom=null,images=[],currentImageIndex=0;
+const profileIcon=document.getElementById("profileIcon"),loginBtn=document.getElementById("loginBtn");
+
+function openModal(id){document.getElementById(id).style.display="flex";}
+function closeModal(id){document.getElementById(id).style.display="none";}
+function switchModal(from,to){closeModal(from);openModal(to);}
+document.getElementById("loginBtn").addEventListener("click",()=>openModal('loginModal'));
+
+function register(){const name=regName.value,email=regEmail.value,pass=regPassword.value;if(name&&email&&pass){users.push({name,email,pass});alert("Registered!");switchModal('registerModal','loginModal');}else alert("Fill all fields.");}
+function login(){const email=loginEmail.value,pass=loginPassword.value;const u=users.find(x=>x.email===email&&x.pass===pass);if(u){currentUser=u;alert("Login successful!");closeModal('loginModal');loginBtn.style.display="none";profileIcon.style.display="block";}else alert("Invalid credentials!");}
+function resetPassword(){const email=forgotEmail.value;if(users.find(x=>x.email===email)){alert("Reset link sent!");closeModal('forgotModal');}else alert("Email not found!");}
+function logout(){currentUser=null;alert("Logged out!");closeModal('profileModal');loginBtn.style.display="block";profileIcon.style.display="none";}
+profileIcon.addEventListener("click",()=>{if(currentUser){profileName.value=currentUser.name;profileEmail.value=currentUser.email;profilePassword.value=currentUser.pass;openModal('profileModal');}});
+function saveProfile(){currentUser.name=profileName.value;currentUser.email=profileEmail.value;currentUser.pass=profilePassword.value;alert("Profile updated!");closeModal('profileModal');}
+
+function viewRoom(name,price,imgArray){
+  if(!currentUser){alert("Please login first!");openModal('loginModal');return;}
+  selectedRoom={name,price,images:imgArray};
+  document.getElementById("roomTitle").textContent=name;
+  document.getElementById("roomPrice").textContent="₹"+price+" / Night";
+  images=imgArray;currentImageIndex=0;renderCarousel();
+  openModal('roomModal');
+}
+function renderCarousel(){
+  const c=document.getElementById("roomCarousel");
+  c.innerHTML='<button class="prev" onclick="prevImage()">‹</button><button class="next" onclick="nextImage()">›</button>';
+  images.forEach((src,i)=>{
+    const img=document.createElement('img');
+    img.src=src;if(i===currentImageIndex)img.classList.add('active');
+    c.appendChild(img);
+  });
+}
+function nextImage(){currentImageIndex=(currentImageIndex+1)%images.length;renderCarousel();}
+function prevImage(){currentImageIndex=(currentImageIndex-1+images.length)%images.length;renderCarousel();}
+
+function calculateCost(){
+  const ci=new Date(document.getElementById('checkin').value);
+  const co=new Date(document.getElementById('checkout').value);
+  if(isNaN(ci)||isNaN(co)||co<=ci){alert("Please select valid dates!");return;}
+  const nights=(co-ci)/(1000*60*60*24);
+  document.getElementById('nightCount').textContent="Total Nights: "+nights;
+  const total=selectedRoom.price*nights;
+  document.getElementById('totalCost').textContent="Total Cost: ₹"+total.toLocaleString();
+}
+function bookRoom(){alert("Booking confirmed for "+selectedRoom.name+" 🎉");closeModal('roomModal');}
+</script>
+</body>
+</html>
